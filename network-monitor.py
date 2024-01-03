@@ -21,6 +21,10 @@ class NetworkMonitor:
                 self.suspicious_packets.append((src_ip, dst_port))
 
     def is_suspicious_packet(self, packet):
+        # Проверка флагов TCP для обнаружения SYN Flood атак
+        if TCP in packet and packet[TCP].flags == 'S' and not packet[TCP].flags == 'A':
+            return True
+
         src_ip = packet[IP].src
         dst_port = packet[TCP].dport
         threshold = 20  # Пример порогового значения
